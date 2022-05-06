@@ -1,28 +1,28 @@
-import React, {useState} from 'react'
-import {StyleSheet, Text, View, Button} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import Card from '../components/Card';
 import Input from '../components/Input';
-import { NumberContainer } from '../components/NumberContainer';
+import {NumberContainer} from '../components/NumberContainer';
 
-function StartGameScreen() {
+function StartGameScreen({onStartGame}) {
 
-    const [enteredValue, setEnteredValue] = useState ('');
-    const [confirmed, setConfirmed] = useState (false);
-    const [selectedNumber, setSelectedNumber] = useState (undefined);
+    const [enteredValue, setEnteredValue] = useState('');
+    const [confirmed, setConfirmed] = useState(false);
+    const [selectedNumber, setSelectedNumber] = useState(undefined);
 
     const numberInputHandler = input => {
         setEnteredValue(input.replace(/[^0-9]/g, ''));
     }
 
-    const resetInputHandler = input => {
+    const resetInputHandler = () => {
         setEnteredValue('')
         setConfirmed(false)
     }
 
     const confirmImputHandler = () => {
         const chosenNumber = parseInt(enteredValue);
-        if(isNaN(chosenNumber) || chosenNumber <=0 || chosenNumber > 90) return
+        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 90) return
 
         setConfirmed(true)
         setSelectedNumber(chosenNumber)
@@ -31,57 +31,61 @@ function StartGameScreen() {
 
     let confirmedOutput;
 
-    if(confirmed){
+    if (confirmed) {
         confirmedOutput = (
             <Card style={styles.selectedContainer}>
                 <Text>You selected:</Text>
                 <NumberContainer>
                     {selectedNumber}
                 </NumberContainer>
+                <Button
+                    title='Ready to start game'
+                    onPress={() => onStartGame(selectedNumber)}
+                />
             </Card>
         )
     }
 
-  return (
-   <View style={styles.screen}>
-    <Card>
-        <Text style={styles.title}> Select a Number </Text>
-        <Input
-            style={styles.input}
-            blurOnSubmit //Android
-            autoCapitalize='none'
-            autoCorrect={false}
-            keyboardType="number-pad"
-            maxLength={2}
-            onChangeText={numberInputHandler}
-            value={enteredValue}
-        />
-        <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-                <Button
-                style={styles.button}
-                title="Reset"
-                color={Colors.secondary}
-                onPress={resetInputHandler}
+    return (
+        <View style={styles.screen}>
+            <Card>
+                <Text style={styles.title}> Select a Number </Text>
+                <Input
+                    style={styles.input}
+                    blurOnSubmit //Android
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    keyboardType="number-pad"
+                    maxLength={2}
+                    onChangeText={numberInputHandler}
+                    value={enteredValue}
                 />
-            </View>
-            <View style={styles.button}>
-                <Button
-                style={styles.button}
-                title="Confirm"
-                color={Colors.primary}
-                onPress= {confirmImputHandler}
-                />
-            </View>
+                <View style={styles.buttonContainer}>
+                    <View style={styles.button}>
+                        <Button
+                            style={styles.button}
+                            title="Reset"
+                            color={Colors.secondary}
+                            onPress={resetInputHandler}
+                        />
+                    </View>
+                    <View style={styles.button}>
+                        <Button
+                            style={styles.button}
+                            title="Confirm"
+                            color={Colors.primary}
+                            onPress={confirmImputHandler}
+                        />
+                    </View>
+                </View>
+            </Card>
+            {confirmedOutput}
         </View>
-    </Card>
-    {confirmedOutput}
-   </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
-    selectedContainer:{
+    selectedContainer: {
         marginTop: 20,
         alignItems: 'center',
         justifyContent: 'center'
@@ -110,7 +114,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 15
     },
-    input:{
+    input: {
         width: 50,
         textAlign: 'center'
     }
