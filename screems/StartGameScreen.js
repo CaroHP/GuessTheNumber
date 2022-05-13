@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import Colors from '../constants/Colors';
 import Card from '../components/Card';
 import Input from '../components/Input';
@@ -14,6 +14,7 @@ function StartGameScreen({ onStartGame }) {
     const [confirmed, setConfirmed] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState(undefined);
     const [name, setName] = useState(undefined);
+    const [img, setImage] = useState(undefined);
 
     const numberInputHandler = input => {
         setEnteredValue(input.replace(/[^0-9]/g, ''));
@@ -32,11 +33,13 @@ function StartGameScreen({ onStartGame }) {
         setSelectedNumber(chosenNumber)
         setEnteredValue('')
         setPokemon('');
+        setImage('');
     }
 
     const setPokemon = async () => {
-        const [name, inmg] = await useFetchPokemon(enteredValue);
+        const [name, img] = await useFetchPokemon(enteredValue);
         setName(name)
+        setImage(img)
     }
 
     let confirmedOutput;
@@ -52,7 +55,14 @@ function StartGameScreen({ onStartGame }) {
                     title='Ready to start game'
                     onPress={() => onStartGame(selectedNumber)}
                 />
-                <Text>{name}</Text>
+
+                <View>
+                    <Text source={img}/>
+                    {img}
+                    <View>
+                        <Text>{name}</Text>
+                    </View>
+                </View>
             </Card>
         )
     }
@@ -128,6 +138,10 @@ const styles = StyleSheet.create({
     input: {
         width: 50,
         textAlign: 'center'
+    },
+    backgroundContainer: {
+        flex: 0
+
     }
 })
 
