@@ -3,13 +3,17 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import Colors from '../constants/Colors';
 import Card from '../components/Card';
 import Input from '../components/Input';
-import {NumberContainer} from '../components/NumberContainer';
+import { NumberContainer } from '../components/NumberContainer';
 
-function StartGameScreen({onStartGame}) {
+import { globalIndexes as limit } from '../constants/constants';
+import { useFetchPokemon } from '../hooks/useFetchPokemon';
+
+function StartGameScreen({ onStartGame }) {
 
     const [enteredValue, setEnteredValue] = useState('');
     const [confirmed, setConfirmed] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState(undefined);
+    const [name, setName] = useState(undefined);
 
     const numberInputHandler = input => {
         setEnteredValue(input.replace(/[^0-9]/g, ''));
@@ -22,11 +26,17 @@ function StartGameScreen({onStartGame}) {
 
     const confirmImputHandler = () => {
         const chosenNumber = parseInt(enteredValue);
-        if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 90) return
+        if (isNaN(chosenNumber) || chosenNumber <= limit.MIN_INDEX || chosenNumber > limit.MAX_INDEX) return
 
         setConfirmed(true)
         setSelectedNumber(chosenNumber)
         setEnteredValue('')
+        setPokemon('');
+    }
+
+    const setPokemon = async () => {
+        const [name, inmg] = await useFetchPokemon(enteredValue);
+        setName(name)
     }
 
     let confirmedOutput;
@@ -42,6 +52,7 @@ function StartGameScreen({onStartGame}) {
                     title='Ready to start game'
                     onPress={() => onStartGame(selectedNumber)}
                 />
+                <Text>{name}</Text>
             </Card>
         )
     }
@@ -56,7 +67,7 @@ function StartGameScreen({onStartGame}) {
                     autoCapitalize='none'
                     autoCorrect={false}
                     keyboardType="number-pad"
-                    maxLength={2}
+                    maxLength={3}
                     onChangeText={numberInputHandler}
                     value={enteredValue}
                 />

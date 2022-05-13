@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native';
 import Card from '../components/Card';
 import { NumberContainer } from '../components/NumberContainer';
-import constants from '../constants/constants';
+import { direction_ as importedDirection } from '../constants/constants'
 
 
 const generateRandomBetween = (min, max, exclude) => {
@@ -22,8 +22,8 @@ const generateRandomBetween = (min, max, exclude) => {
 
 const GameScreen = ({ selectedNumber, onGameOver }) => {
 
-  const currentLow = useRef(1);
-  const currentHigh = useRef(100);
+  const currentLow = useRef(0);
+  const currentHigh = useRef(3999);
   const [currentGuess, setCurrentGuess] = useState(generateRandomBetween(currentLow.current, currentHigh.current, selectedNumber));
   const [rounds, setRounds] = useState(0);
 
@@ -34,14 +34,14 @@ const GameScreen = ({ selectedNumber, onGameOver }) => {
   }, [currentGuess])
 
   const nextGuess = direction => {
-    if ((direction === constants.direction.higher && currentGuess > selectedNumber) ||
-      (direction === constants.direction.lower && currentGuess < selectedNumber)) {
+    if ((direction === importedDirection.higher && currentGuess > selectedNumber) ||
+      (direction === importedDirection.lower && currentGuess < selectedNumber)) {
       // Alert('Pls don\t lie, You know that\s wrong', [{ text: 'Sorry', style: 'cancel'}])
       alert('Pls don\'t lie')
       return
     }
 
-    if (direction === constants.direction.lower) {
+    if (direction === importedDirection.lower) {
       currentHigh.current = currentGuess;
 
     } else {
@@ -60,8 +60,8 @@ const GameScreen = ({ selectedNumber, onGameOver }) => {
       <Text>Computer Guess: </Text>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card style={styles.buttonContainer}>
-        <Button title='Lower' onPress={() => { nextGuess(constants.direction.lower) }}></Button>
-        <Button title='Higher' onPress={() => { nextGuess(constants.direction.higher) }}></Button>
+        <Button title='Lower' onPress={() => { nextGuess(importedDirection.lower) }}></Button>
+        <Button title='Higher' onPress={() => { nextGuess(importedDirection.higher) }}></Button>
       </Card>
     </View>
   )
